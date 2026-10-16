@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { ContentProvider } from './context/ContentContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import AdminPanel from './components/AdminPanel';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
@@ -12,6 +14,7 @@ import Manufacturers from './pages/Manufacturers';
 import Contacts from './pages/Contacts';
 import Cart from './pages/Cart';
 import Account from './pages/Account';
+import AdminLogin from './pages/AdminLogin';
 import { Delivery, Payment, Documents, Privacy, Sitemap } from './pages/StaticPages';
 
 function ScrollToTop() {
@@ -28,35 +31,43 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <AdminPanel />
     </div>
   );
 }
 
 export default function App() {
   return (
-    <CartProvider>
-      <HashRouter>
-        <ScrollToTop />
-        <Layout>
+    <ContentProvider>
+      <CartProvider>
+        <HashRouter>
+          <ScrollToTop />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/news" element={<NewsList />} />
-            <Route path="/news/:id" element={<NewsDetail />} />
-            <Route path="/manufacturers" element={<Manufacturers />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/delivery" element={<Delivery />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/documents" element={<Documents />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/sitemap" element={<Sitemap />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="*" element={
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/catalog" element={<Catalog />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/news" element={<NewsList />} />
+                  <Route path="/news/:id" element={<NewsDetail />} />
+                  <Route path="/manufacturers" element={<Manufacturers />} />
+                  <Route path="/contacts" element={<Contacts />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/account" element={<Account />} />
+                  <Route path="/delivery" element={<Delivery />} />
+                  <Route path="/payment" element={<Payment />} />
+                  <Route path="/documents" element={<Documents />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/sitemap" element={<Sitemap />} />
+                </Routes>
+              </Layout>
+            } />
           </Routes>
-        </Layout>
-      </HashRouter>
-    </CartProvider>
+        </HashRouter>
+      </CartProvider>
+    </ContentProvider>
   );
 }

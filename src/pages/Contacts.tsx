@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle, MessageSquare, PhoneCall, FileText } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
+import EditableText from '../components/EditableText';
+import EditableTable from '../components/EditableTable';
 
 export default function Contacts() {
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [honeypot, setHoneypot] = useState('');
+  const { content, isAdmin, isEditMode } = useContent();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,19 +37,39 @@ export default function Contacts() {
             <div className="space-y-4 text-sm">
               <div>
                 <div className="text-slate-500 mb-1">Юридическое название</div>
-                <div className="text-slate-800 font-medium">ООО «ЭлектроОпт»</div>
+                <EditableText 
+                  contentKey="contacts.company.name" 
+                  as="div" 
+                  className="text-slate-800 font-medium"
+                  defaultValue="ООО «ЭлектроОпт»"
+                />
               </div>
               <div>
                 <div className="text-slate-500 mb-1">ИНН / КПП</div>
-                <div className="text-slate-800">7712345678 / 771201001</div>
+                <EditableText 
+                  contentKey="contacts.company.inn" 
+                  as="div" 
+                  className="text-slate-800"
+                  defaultValue="7712345678 / 771201001"
+                />
               </div>
               <div>
                 <div className="text-slate-500 mb-1">ОГРН</div>
-                <div className="text-slate-800">1157746123456</div>
+                <EditableText 
+                  contentKey="contacts.company.ogrn" 
+                  as="div" 
+                  className="text-slate-800"
+                  defaultValue="1157746123456"
+                />
               </div>
               <div>
                 <div className="text-slate-500 mb-1">Юридический адрес</div>
-                <div className="text-slate-800">123456, г. Москва, ул. Электронная, д. 15, стр. 2</div>
+                <EditableText 
+                  contentKey="contacts.company.address" 
+                  as="div" 
+                  className="text-slate-800"
+                  defaultValue="123456, г. Москва, ул. Электронная, д. 15, стр. 2"
+                />
               </div>
             </div>
           </div>
@@ -53,53 +77,54 @@ export default function Contacts() {
           <div className="bg-white rounded-xl border border-slate-200 p-6">
             <h3 className="font-semibold text-slate-800 mb-4">Контактная информация</h3>
             <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <Phone size={18} className="text-blue-600 mt-0.5 shrink-0" />
-                <div>
-                  <div className="font-medium text-slate-800">+7 (495) 123-45-67</div>
-                  <div className="text-xs text-slate-500">Отдел продаж</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Phone size={18} className="text-blue-600 mt-0.5 shrink-0" />
-                <div>
-                  <div className="font-medium text-slate-800">+7 (495) 123-45-68</div>
-                  <div className="text-xs text-slate-500">Бухгалтерия</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Phone size={18} className="text-blue-600 mt-0.5 shrink-0" />
-                <div>
-                  <div className="font-medium text-slate-800">+7 (495) 123-45-69</div>
-                  <div className="text-xs text-slate-500">Склад</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Mail size={18} className="text-blue-600 mt-0.5 shrink-0" />
-                <div>
-                  <div className="font-medium text-slate-800">info@electroopt.ru</div>
-                  <div className="text-xs text-slate-500">Общие вопросы</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Mail size={18} className="text-blue-600 mt-0.5 shrink-0" />
-                <div>
-                  <div className="font-medium text-slate-800">sales@electroopt.ru</div>
-                  <div className="text-xs text-slate-500">Отдел продаж</div>
-                </div>
-              </div>
+              <EditableTable
+                contentKey="contacts.phones"
+                columns={[
+                  { key: 'number', label: 'Телефон' },
+                  { key: 'dept', label: 'Отдел' },
+                ]}
+                className="mb-4"
+              />
+              <EditableTable
+                contentKey="contacts.emails"
+                columns={[
+                  { key: 'email', label: 'Email' },
+                  { key: 'dept', label: 'Отдел' },
+                ]}
+                className="mb-4"
+              />
               <div className="flex items-start gap-3">
                 <Clock size={18} className="text-blue-600 mt-0.5 shrink-0" />
                 <div>
-                  <div className="font-medium text-slate-800">Пн-Пт: 9:00 - 18:00</div>
-                  <div className="text-xs text-slate-500">Сб-Вс: выходной</div>
+                  <EditableText 
+                    contentKey="contacts.schedule" 
+                    as="div" 
+                    className="font-medium text-slate-800"
+                    defaultValue="Пн-Пт: 9:00 - 18:00"
+                  />
+                  <EditableText 
+                    contentKey="contacts.scheduleNote" 
+                    as="div" 
+                    className="text-xs text-slate-500"
+                    defaultValue="Сб-Вс: выходной"
+                  />
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="text-blue-600 mt-0.5 shrink-0" />
                 <div>
-                  <div className="font-medium text-slate-800">г. Москва, ул. Электронная, д. 15</div>
-                  <div className="text-xs text-slate-500">Офис и склад</div>
+                  <EditableText 
+                    contentKey="contacts.actualAddress" 
+                    as="div" 
+                    className="font-medium text-slate-800"
+                    defaultValue="г. Москва, ул. Электронная, д. 15"
+                  />
+                  <EditableText 
+                    contentKey="contacts.actualAddressNote" 
+                    as="div" 
+                    className="text-xs text-slate-500"
+                    defaultValue="Офис и склад"
+                  />
                 </div>
               </div>
             </div>

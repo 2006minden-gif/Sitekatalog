@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, Phone, Mail, ChevronDown } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, Phone, Mail, ChevronDown, Settings } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useContent } from '../context/ContentContext';
 import { categories } from '../data/products';
+import EditableText from './EditableText';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -10,6 +12,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { totalItems } = useCart();
+  const { isAdmin } = useContent();
   const location = useLocation();
 
   const navLinks = [
@@ -26,16 +29,32 @@ export default function Header() {
       <div className="bg-slate-800 text-white text-sm">
         <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
           <div className="hidden md:flex items-center gap-4">
-            <a href="tel:+74951234567" className="flex items-center gap-1 hover:text-blue-300">
-              <Phone size={14} /> +7 (495) 123-45-67
-            </a>
-            <a href="mailto:info@electroopt.ru" className="flex items-center gap-1 hover:text-blue-300">
-              <Mail size={14} /> info@electroopt.ru
-            </a>
+            <EditableText 
+              contentKey="header.phone" 
+              as="a" 
+              className="flex items-center gap-1 hover:text-blue-300"
+              defaultValue="+7 (495) 123-45-67"
+            />
+            <EditableText 
+              contentKey="header.email" 
+              as="a" 
+              className="flex items-center gap-1 hover:text-blue-300"
+              defaultValue="info@electroopt.ru"
+            />
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline">Пн-Пт: 9:00 - 18:00</span>
+            <EditableText 
+              contentKey="header.schedule" 
+              as="span" 
+              className="hidden sm:inline"
+              defaultValue="Пн-Пт: 9:00 - 18:00"
+            />
             <Link to="/account" className="hover:text-blue-300">Личный кабинет</Link>
+            {isAdmin && (
+              <Link to="/admin" className="flex items-center gap-1 text-blue-300 hover:text-blue-200">
+                <Settings size={14} /> Админ
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -49,8 +68,18 @@ export default function Header() {
               <span className="text-white font-bold text-lg">Э</span>
             </div>
             <div>
-              <div className="font-bold text-slate-800 text-lg leading-tight">ЭлектроОпт</div>
-              <div className="text-xs text-slate-500">Электронные компоненты оптом</div>
+              <EditableText 
+                contentKey="header.companyName" 
+                as="div" 
+                className="font-bold text-slate-800 text-lg leading-tight"
+                defaultValue="ЭлектроОпт"
+              />
+              <EditableText 
+                contentKey="header.companyDesc" 
+                as="div" 
+                className="text-xs text-slate-500"
+                defaultValue="Электронные компоненты оптом"
+              />
             </div>
           </Link>
 

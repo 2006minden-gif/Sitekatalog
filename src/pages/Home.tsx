@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Package, Truck, Shield, Clock, Search, BarChart3, Users } from 'lucide-react';
 import { categories, products, news } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useContent } from '../context/ContentContext';
+import EditableText from '../components/EditableText';
+import EditableList from '../components/EditableList';
 
 export default function Home() {
   const { addToCart } = useCart();
+  const { content, isAdmin, isEditMode } = useContent();
   const featuredProducts = products.slice(0, 6);
   const latestNews = news.slice(0, 3);
 
@@ -17,12 +21,14 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Электронные компоненты <span className="text-blue-400">оптом</span>
+                <EditableText contentKey="home.hero.title" as="span" className="inline" />
               </h1>
-              <p className="text-lg text-slate-300 mb-8 leading-relaxed">
-                Более 50 000 наименований от ведущих мировых производителей. 
-                Прямые поставки, конкурентные цены, доставка по всей России.
-              </p>
+              <EditableText 
+                contentKey="home.hero.subtitle" 
+                as="p" 
+                className="text-lg text-slate-300 mb-8 leading-relaxed block" 
+                multiline 
+              />
               <div className="flex flex-wrap gap-4">
                 <Link to="/catalog" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors flex items-center gap-2">
                   Перейти в каталог <ArrowRight size={18} />
@@ -34,20 +40,20 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <div className="text-3xl font-bold text-blue-400">50 000+</div>
-                <div className="text-sm text-slate-300 mt-1">Наименований в каталоге</div>
+                <EditableText contentKey="home.stats.products" as="div" className="text-3xl font-bold text-blue-400" />
+                <EditableText contentKey="home.stats.productsLabel" as="div" className="text-sm text-slate-300 mt-1" />
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <div className="text-3xl font-bold text-blue-400">200+</div>
-                <div className="text-sm text-slate-300 mt-1">Производителей</div>
+                <EditableText contentKey="home.stats.manufacturers" as="div" className="text-3xl font-bold text-blue-400" />
+                <EditableText contentKey="home.stats.manufacturersLabel" as="div" className="text-sm text-slate-300 mt-1" />
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <div className="text-3xl font-bold text-blue-400">15 лет</div>
-                <div className="text-sm text-slate-300 mt-1">На рынке</div>
+                <EditableText contentKey="home.stats.years" as="div" className="text-3xl font-bold text-blue-400" />
+                <EditableText contentKey="home.stats.yearsLabel" as="div" className="text-sm text-slate-300 mt-1" />
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <div className="text-3xl font-bold text-blue-400">24/7</div>
-                <div className="text-sm text-slate-300 mt-1">Приём заказов</div>
+                <EditableText contentKey="home.stats.support" as="div" className="text-3xl font-bold text-blue-400" />
+                <EditableText contentKey="home.stats.supportLabel" as="div" className="text-sm text-slate-300 mt-1" />
               </div>
             </div>
           </div>
@@ -57,23 +63,51 @@ export default function Home() {
       {/* Advantages */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-slate-800 mb-12">Почему выбирают нас</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: Package, title: 'Широкий ассортимент', desc: 'Более 50 000 наименований электронных компонентов в наличии и под заказ' },
-              { icon: Truck, title: 'Быстрая доставка', desc: 'Доставка по Москве за 1 день, по России — от 2 дней' },
-              { icon: Shield, title: 'Гарантия качества', desc: 'Только оригинальная продукция от официальных дистрибьюторов' },
-              { icon: Clock, title: 'Оперативность', desc: 'Обработка заказов в течение 2 часов, персональный менеджер' },
-            ].map((item, i) => (
-              <div key={i} className="p-6 rounded-xl border border-slate-200 hover:border-blue-200 hover:shadow-lg transition-all">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <item.icon size={24} className="text-blue-600" />
+          <EditableText 
+            contentKey="home.advantages.title" 
+            as="h2" 
+            className="text-3xl font-bold text-center text-slate-800 mb-12 block" 
+          />
+          <EditableList
+            contentKey="home.advantages"
+            defaultItem={{ title: 'Новое преимущество', desc: 'Описание преимущества' }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            itemClassName=""
+            renderItem={(item, index, isEditing, onChange) => {
+              const icons = [Package, Truck, Shield, Clock];
+              const Icon = icons[index % icons.length];
+              return (
+                <div className="p-6 rounded-xl border border-slate-200 hover:border-blue-200 hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <Icon size={24} className="text-blue-600" />
+                  </div>
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={item.title}
+                        onChange={(e) => onChange({ ...item, title: e.target.value })}
+                        className="w-full px-2 py-1 border border-blue-300 rounded font-semibold"
+                        placeholder="Заголовок"
+                      />
+                      <textarea
+                        value={item.desc}
+                        onChange={(e) => onChange({ ...item, desc: e.target.value })}
+                        className="w-full px-2 py-1 border border-blue-300 rounded text-sm"
+                        rows={3}
+                        placeholder="Описание"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <h3 className="font-semibold text-slate-800 mb-2">{item.title}</h3>
+                      <p className="text-sm text-slate-600">{item.desc}</p>
+                    </>
+                  )}
                 </div>
-                <h3 className="font-semibold text-slate-800 mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-600">{item.desc}</p>
-              </div>
-            ))}
-          </div>
+              );
+            }}
+          />
         </div>
       </section>
 
@@ -190,10 +224,17 @@ export default function Home() {
       {/* CTA */}
       <section className="py-16 bg-blue-600">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Нужен подбор компонентов?</h2>
-          <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-            Отправьте нам спецификацию или BOM-лист, и наши инженеры подберут оптимальные компоненты для вашего проекта.
-          </p>
+          <EditableText 
+            contentKey="home.cta.title" 
+            as="h2" 
+            className="text-3xl font-bold text-white mb-4 block" 
+          />
+          <EditableText 
+            contentKey="home.cta.subtitle" 
+            as="p" 
+            className="text-blue-100 mb-8 max-w-2xl mx-auto block" 
+            multiline 
+          />
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/contacts" className="px-6 py-3 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors">
               Отправить запрос

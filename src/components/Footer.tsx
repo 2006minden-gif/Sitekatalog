@@ -81,6 +81,7 @@ export default function Footer() {
           <div className="flex gap-4 text-sm text-slate-400">
             <Link to="/sitemap" className="hover:text-white">Карта сайта</Link>
             <Link to="/privacy" className="hover:text-white">Политика конфиденциальности</Link>
+            <Link to="/admin" className="hover:text-white opacity-50">Админ</Link>
           </div>
         </div>
       </div>

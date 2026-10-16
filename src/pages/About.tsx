@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Award, Users, Target, CheckCircle, Building2, Globe } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
+import EditableText from '../components/EditableText';
+import EditableList from '../components/EditableList';
 
 export default function About() {
+  const { content, isAdmin, isEditMode } = useContent();
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Breadcrumbs */}
@@ -18,29 +22,34 @@ export default function About() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-8 lg:p-12 text-white mb-12">
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           <div>
-            <h2 className="text-2xl font-bold mb-4">Надёжный поставщик электронных компонентов с 2011 года</h2>
-            <p className="text-blue-100 leading-relaxed">
-              Компания «ЭлектроОпт» специализируется на оптовых поставках электронных компонентов 
-              от ведущих мировых производителей. За 15 лет работы мы стали надёжным партнёром 
-              для более чем 2000 предприятий по всей России.
-            </p>
+            <EditableText 
+              contentKey="about.hero.title" 
+              as="h2" 
+              className="text-2xl font-bold mb-4 block" 
+            />
+            <EditableText 
+              contentKey="about.hero.text" 
+              as="p" 
+              className="text-blue-100 leading-relaxed block" 
+              multiline 
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/10 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">15</div>
-              <div className="text-sm text-blue-200">лет на рынке</div>
+              <EditableText contentKey="about.stats.years" as="div" className="text-3xl font-bold" />
+              <EditableText contentKey="about.stats.yearsLabel" as="div" className="text-sm text-blue-200" />
             </div>
             <div className="bg-white/10 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">2000+</div>
-              <div className="text-sm text-blue-200">клиентов</div>
+              <EditableText contentKey="about.stats.clients" as="div" className="text-3xl font-bold" />
+              <EditableText contentKey="about.stats.clientsLabel" as="div" className="text-sm text-blue-200" />
             </div>
             <div className="bg-white/10 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">50 000+</div>
-              <div className="text-sm text-blue-200">наименований</div>
+              <EditableText contentKey="about.stats.products" as="div" className="text-3xl font-bold" />
+              <EditableText contentKey="about.stats.productsLabel" as="div" className="text-sm text-blue-200" />
             </div>
             <div className="bg-white/10 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">200+</div>
-              <div className="text-sm text-blue-200">брендов</div>
+              <EditableText contentKey="about.stats.brands" as="div" className="text-3xl font-bold" />
+              <EditableText contentKey="about.stats.brandsLabel" as="div" className="text-sm text-blue-200" />
             </div>
           </div>
         </div>
@@ -49,81 +58,123 @@ export default function About() {
       {/* Mission */}
       <div className="grid lg:grid-cols-2 gap-12 mb-12">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">Наша миссия</h2>
-          <p className="text-slate-600 leading-relaxed mb-4">
-            Обеспечивать предприятия электронной промышленности качественными компонентами 
-            по конкурентным ценам с минимальными сроками поставки.
-          </p>
-          <p className="text-slate-600 leading-relaxed">
-            Мы стремимся быть не просто поставщиком, а технологическим партнёром, 
-            помогая клиентам оптимизировать закупки и находить лучшие решения для их проектов.
-          </p>
+          <EditableText 
+            contentKey="about.mission.title" 
+            as="h2" 
+            className="text-2xl font-bold text-slate-800 mb-4 block" 
+          />
+          <EditableText 
+            contentKey="about.mission.text" 
+            as="p" 
+            className="text-slate-600 leading-relaxed block" 
+            multiline 
+          />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-slate-800 mb-4">Ключевые компетенции</h2>
-          <ul className="space-y-3">
-            {[
-              'Прямые контракты с производителями и авторизованными дистрибьюторами',
-              'Техническая поддержка и помощь в подборе аналогов',
-              'Собственный склад 5000 м² с системой управления запасами',
-              'Оперативная логистика по всей России и СНГ',
-              'Гибкие условия оплаты для постоянных клиентов',
-              'Гарантия подлинности каждой поставки',
-            ].map((item, i) => (
-              <li key={i} className="flex items-start gap-3">
+          <EditableList
+            contentKey="about.competencies"
+            defaultItem="Новый пункт компетенции"
+            className="space-y-3"
+            renderItem={(item, index, isEditing, onChange) => (
+              <li className="flex items-start gap-3">
                 <CheckCircle size={20} className="text-green-600 shrink-0 mt-0.5" />
-                <span className="text-slate-600">{item}</span>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={item}
+                    onChange={(e) => onChange(e.target.value)}
+                    className="flex-1 px-2 py-1 border border-blue-300 rounded text-slate-600"
+                  />
+                ) : (
+                  <span className="text-slate-600">{item}</span>
+                )}
               </li>
-            ))}
-          </ul>
+            )}
+          />
         </div>
       </div>
 
       {/* Advantages */}
       <div className="mb-12">
         <h2 className="text-2xl font-bold text-slate-800 mb-8 text-center">Преимущества работы с нами</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { icon: Award, title: 'Оригинальная продукция', desc: 'Работаем только с официальными дистрибьюторами. Каждая партия проходит входной контроль качества.' },
-            { icon: Users, title: 'Персональный менеджер', desc: 'За каждым клиентом закреплён персональный менеджер, знающий специфику вашего производства.' },
-            { icon: Target, title: 'Подбор аналогов', desc: 'Помогаем найти замену дефицитным компонентам. Инженеры подберут оптимальный аналог.' },
-            { icon: Building2, title: 'Собственный склад', desc: 'Более 50 000 наименований в наличии на складе в Москве. Отгрузка в день заказа.' },
-            { icon: Globe, title: 'Доставка по всей России', desc: 'Собственная логистическая служба и партнёрство с транспортными компаниями.' },
-            { icon: CheckCircle, title: 'Гибкие условия', desc: 'Отсрочка платежа, кредитные лимиты, индивидуальные условия для крупных заказов.' },
-          ].map((item, i) => (
-            <div key={i} className="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <item.icon size={24} className="text-blue-600" />
+        <EditableList
+          contentKey="about.advantages"
+          defaultItem={{ title: 'Новое преимущество', desc: 'Описание преимущества' }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          renderItem={(item, index, isEditing, onChange) => {
+            const icons = [Award, Users, Target, Building2, Globe, CheckCircle];
+            const Icon = icons[index % icons.length];
+            return (
+              <div className="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <Icon size={24} className="text-blue-600" />
+                </div>
+                {isEditing ? (
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={item.title}
+                      onChange={(e) => onChange({ ...item, title: e.target.value })}
+                      className="w-full px-2 py-1 border border-blue-300 rounded font-semibold"
+                      placeholder="Заголовок"
+                    />
+                    <textarea
+                      value={item.desc}
+                      onChange={(e) => onChange({ ...item, desc: e.target.value })}
+                      className="w-full px-2 py-1 border border-blue-300 rounded text-sm"
+                      rows={3}
+                      placeholder="Описание"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <h3 className="font-semibold text-slate-800 mb-2">{item.title}</h3>
+                    <p className="text-sm text-slate-600">{item.desc}</p>
+                  </>
+                )}
               </div>
-              <h3 className="font-semibold text-slate-800 mb-2">{item.title}</h3>
-              <p className="text-sm text-slate-600">{item.desc}</p>
-            </div>
-          ))}
-        </div>
+            );
+          }}
+        />
       </div>
 
       {/* History */}
       <div className="bg-slate-50 rounded-2xl p-8 mb-12">
         <h2 className="text-2xl font-bold text-slate-800 mb-6">История компании</h2>
-        <div className="space-y-6">
-          {[
-            { year: '2011', text: 'Основание компании. Начало работы на рынке электронных компонентов.' },
-            { year: '2014', text: 'Открытие собственного склада. Подписание прямых контрактов с Yageo и Murata.' },
-            { year: '2017', text: 'Расширение ассортимента до 20 000 наименований. Запуск онлайн-каталога.' },
-            { year: '2019', text: 'Партнёрство с STMicroelectronics и Texas Instruments. Открытие филиала в Санкт-Петербурге.' },
-            { year: '2022', text: 'Преодоление отметки в 1000 постоянных клиентов. Автоматизация складских процессов.' },
-            { year: '2025', text: 'Обновление онлайн-платформы. Внедрение системы электронного документооборота.' },
-          ].map((item, i) => (
-            <div key={i} className="flex gap-4">
+        <EditableList
+          contentKey="about.history"
+          defaultItem={{ year: '2026', text: 'Новое событие в истории компании' }}
+          className="space-y-6"
+          renderItem={(item, index, isEditing, onChange) => (
+            <div className="flex gap-4">
               <div className="shrink-0 w-16 text-right">
-                <span className="text-blue-600 font-bold">{item.year}</span>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={item.year}
+                    onChange={(e) => onChange({ ...item, year: e.target.value })}
+                    className="w-full px-1 py-0.5 border border-blue-300 rounded text-blue-600 font-bold text-center"
+                  />
+                ) : (
+                  <span className="text-blue-600 font-bold">{item.year}</span>
+                )}
               </div>
-              <div className="border-l-2 border-blue-200 pl-4 pb-4">
-                <p className="text-slate-600">{item.text}</p>
+              <div className="border-l-2 border-blue-200 pl-4 pb-4 flex-1">
+                {isEditing ? (
+                  <textarea
+                    value={item.text}
+                    onChange={(e) => onChange({ ...item, text: e.target.value })}
+                    className="w-full px-2 py-1 border border-blue-300 rounded text-slate-600"
+                    rows={2}
+                  />
+                ) : (
+                  <p className="text-slate-600">{item.text}</p>
+                )}
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        />
       </div>
 
       {/* Certificates */}
