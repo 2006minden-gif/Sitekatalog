@@ -32,7 +32,7 @@ export default function Footer() {
 
           {/* Catalog */}
           <div>
-            <h3 className="font-semibold mb-4">Каталог</h3>
+            <EditableText contentKey="footer.catalog.title" as="h3" className="font-semibold mb-4 block" defaultValue="Каталог" />
             <ul className="space-y-2 text-sm text-slate-400">
               <li><Link to="/catalog?category=resistors" className="hover:text-white">Резисторы</Link></li>
               <li><Link to="/catalog?category=capacitors" className="hover:text-white">Конденсаторы</Link></li>
@@ -45,7 +45,7 @@ export default function Footer() {
 
           {/* Info */}
           <div>
-            <h3 className="font-semibold mb-4">Информация</h3>
+            <EditableText contentKey="footer.info.title" as="h3" className="font-semibold mb-4 block" defaultValue="Информация" />
             <ul className="space-y-2 text-sm text-slate-400">
               <li><Link to="/about" className="hover:text-white">О компании</Link></li>
               <li><Link to="/manufacturers" className="hover:text-white">Производители</Link></li>
@@ -58,7 +58,7 @@ export default function Footer() {
 
           {/* Contacts */}
           <div>
-            <h3 className="font-semibold mb-4">Контакты</h3>
+            <EditableText contentKey="footer.contacts.title" as="h3" className="font-semibold mb-4 block" defaultValue="Контакты" />
             <ul className="space-y-3 text-sm text-slate-400">
               <li className="flex items-start gap-2">
                 <Phone size={16} className="mt-0.5 shrink-0" />

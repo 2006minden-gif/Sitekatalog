@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft, CheckCircle, FileText } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useContent } from '../context/ContentContext';
+import EditableText from '../components/EditableText';
 
 export default function Cart() {
   const { items, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
+  const { isAdmin, isEditMode } = useContent();
   const [orderSubmitted, setOrderSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     companyName: '', contactPerson: '', phone: '', email: '', deliveryAddress: '', comment: ''
@@ -20,10 +23,14 @@ export default function Cart() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <CheckCircle size={64} className="text-green-600 mx-auto mb-6" />
-        <h1 className="text-3xl font-bold text-slate-800 mb-4">Заявка отправлена!</h1>
-        <p className="text-slate-600 mb-8">
-          Ваша заявка принята. Менеджер свяжется с вами в течение 2 часов для подтверждения заказа.
-        </p>
+        <EditableText contentKey="cart.success.title" as="h1" className="text-3xl font-bold text-slate-800 mb-4 block" defaultValue="Заявка отправлена!" />
+        <EditableText 
+          contentKey="cart.success.subtitle" 
+          as="p" 
+          className="text-slate-600 mb-8 block"
+          multiline
+          defaultValue="Ваша заявка принята. Менеджер свяжется с вами в течение 2 часов для подтверждения заказа."
+        />
         <Link to="/catalog" className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors inline-block">
           Вернуться в каталог
         </Link>
@@ -35,8 +42,14 @@ export default function Cart() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <ShoppingCart size={64} className="text-slate-300 mx-auto mb-6" />
-        <h1 className="text-2xl font-bold text-slate-800 mb-4">Корзина пуста</h1>
-        <p className="text-slate-600 mb-8">Добавьте товары из каталога для оформления заявки</p>
+        <EditableText contentKey="cart.empty.title" as="h1" className="text-2xl font-bold text-slate-800 mb-4 block" defaultValue="Корзина пуста" />
+        <EditableText 
+          contentKey="cart.empty.subtitle" 
+          as="p" 
+          className="text-slate-600 mb-8 block"
+          multiline
+          defaultValue="Добавьте товары из каталога для оформления заявки"
+        />
         <Link to="/catalog" className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors inline-block">
           Перейти в каталог
         </Link>
@@ -52,7 +65,7 @@ export default function Cart() {
         <span className="text-slate-800">Корзина</span>
       </nav>
 
-      <h1 className="text-3xl font-bold text-slate-800 mb-8">Корзина / Оформление заявки</h1>
+      <EditableText contentKey="cart.title" as="h1" className="text-3xl font-bold text-slate-800 mb-8 block" defaultValue="Корзина / Оформление заявки" />
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Cart items */}

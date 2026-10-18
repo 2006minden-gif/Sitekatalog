@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Package, FileText, Settings, LogOut, Bell, ChevronRight } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
+import EditableText from '../components/EditableText';
 
 export default function Account() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [activeTab, setActiveTab] = useState('orders');
+  const { isAdmin, isEditMode } = useContent();
 
   if (!isLoggedIn) {
     return (
@@ -15,8 +18,14 @@ export default function Account() {
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <User size={32} className="text-blue-600" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-800">Личный кабинет</h1>
-            <p className="text-sm text-slate-500 mt-1">Войдите для доступа к заказам и персональным условиям</p>
+            <EditableText contentKey="account.login.title" as="h1" className="text-2xl font-bold text-slate-800 block" defaultValue="Личный кабинет" />
+            <EditableText 
+              contentKey="account.login.subtitle" 
+              as="p" 
+              className="text-sm text-slate-500 mt-1 block"
+              multiline
+              defaultValue="Войдите для доступа к заказам и персональным условиям"
+            />
           </div>
           <form onSubmit={(e) => { e.preventDefault(); setIsLoggedIn(true); }} className="space-y-4">
             <div>

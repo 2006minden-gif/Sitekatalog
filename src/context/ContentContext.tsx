@@ -189,6 +189,93 @@ const defaultContent: ContentData = {
 
   // Manufacturers
   'manufacturers.title': 'Производители',
+  'manufacturers.items': [
+    { id: '1', name: 'STMicroelectronics', logo: '🔵', country: 'Швейцария', website: 'https://www.st.com', description: 'Полупроводниковые компоненты и решения для электроники' },
+    { id: '2', name: 'Texas Instruments', logo: '🔴', country: 'США', website: 'https://www.ti.com', description: 'Аналоговые и встраиваемые процессоры' },
+    { id: '3', name: 'Infineon', logo: '🟢', country: 'Германия', website: 'https://www.infineon.com', description: 'Силовые полупроводники и системы безопасности' },
+    { id: '4', name: 'Murata', logo: '🟡', country: 'Япония', website: 'https://www.murata.com', description: 'Электронные компоненты и модули связи' },
+    { id: '5', name: 'Yageo', logo: '🟠', country: 'Тайвань', website: 'https://www.yageo.com', description: 'Пассивные компоненты: резисторы, конденсаторы' },
+    { id: '6', name: 'Microchip', logo: '🟣', country: 'США', website: 'https://www.microchip.com', description: 'Микроконтроллеры, память и аналоговые ИС' },
+    { id: '7', name: 'onsemi', logo: '⚪', country: 'США', website: 'https://www.onsemi.com', description: 'Силовые и сенсорные решения' },
+    { id: '8', name: 'Vishay', logo: '🔵', country: 'США', website: 'https://www.vishay.com', description: 'Дискретные компоненты и пассивные элементы' },
+    { id: '9', name: 'Molex', logo: '🟤', country: 'США', website: 'https://www.molex.com', description: 'Коннекторы и интерконнект-решения' },
+    { id: '10', name: 'Winbond', logo: '⚫', country: 'Тайвань', website: 'https://www.winbond.com', description: 'Память и специализированные ИС' },
+    { id: '11', name: 'IXYS', logo: '🔶', country: 'США', website: 'https://www.ixys.com', description: 'Силовые полупроводники и оптоэлектроника' },
+    { id: '12', name: 'NXP', logo: '🔷', country: 'Нидерланды', website: 'https://www.nxp.com', description: 'Встраиваемые процессоры и IoT решения' },
+  ],
+
+  // Certificates (About page)
+  'about.certificates.title': 'Сертификаты и лицензии',
+  'about.certificates': [
+    { title: 'Сертификат дистрибьютора ST', icon: '🏆' },
+    { title: 'Авторизация Infineon', icon: '📜' },
+    { title: 'ISO 9001:2015', icon: '✅' },
+    { title: 'Сертификат TI', icon: '🎖' },
+  ],
+
+  // Cart texts
+  'cart.title': 'Корзина / Оформление заявки',
+  'cart.empty.title': 'Корзина пуста',
+  'cart.empty.subtitle': 'Добавьте товары из каталога для оформления заявки',
+  'cart.form.title': 'Данные для оформления заявки',
+  'cart.summary.title': 'Итого',
+  'cart.summary.items': 'Позиций:',
+  'cart.summary.quantity': 'Общее кол-во:',
+  'cart.summary.total': 'Сумма:',
+  'cart.summary.note1': '• Цены указаны без НДС',
+  'cart.summary.note2': '• Точная стоимость будет рассчитана менеджером',
+  'cart.summary.note3': '• Минимальная сумма заказа: $100',
+  'cart.success.title': 'Заявка отправлена!',
+  'cart.success.subtitle': 'Ваша заявка принята. Менеджер свяжется с вами в течение 2 часов для подтверждения заказа.',
+
+  // Account texts
+  'account.login.title': 'Личный кабинет',
+  'account.login.subtitle': 'Войдите для доступа к заказам и персональным условиям',
+  'account.register.text': 'Нет аккаунта?',
+  'account.register.link': 'Зарегистрироваться →',
+
+  // Contacts quick actions
+  'contacts.quickActions.callback': 'Заказать звонок',
+  'contacts.quickActions.callbackDesc': 'Перезвоним за 5 минут',
+  'contacts.quickActions.sales': 'Написать в отдел продаж',
+  'contacts.quickActions.salesDesc': 'sales@electroopt.ru',
+  'contacts.quickActions.quote': 'Запросить КП',
+  'contacts.quickActions.quoteDesc': 'Ответ в течение 2 часов',
+  'contacts.form.title': 'Обратная связь',
+  'contacts.form.success': 'Сообщение отправлено!',
+  'contacts.form.successText': 'Мы свяжемся с вами в ближайшее время.',
+  'contacts.map.title': 'Схема проезда',
+
+  // Header navigation
+  'header.nav.catalog': 'Каталог',
+  'header.nav.about': 'О компании',
+  'header.nav.manufacturers': 'Производители',
+  'header.nav.news': 'Новости',
+  'header.nav.contacts': 'Контакты',
+  'header.nav.account': 'Личный кабинет',
+  'header.nav.delivery': 'Доставка',
+  'header.nav.payment': 'Оплата',
+  'header.nav.documents': 'Документы',
+
+  // Product detail
+  'product.characteristics': 'Характеристики',
+  'product.datasheet': 'Скачать PDF-документацию (Datasheet)',
+  'product.inStock': 'В наличии',
+  'product.warehouse': 'Склад Москва',
+  'product.deliveryLabel': 'Срок поставки:',
+  'product.deliveryDays': 'дня',
+  'product.deliveryRegion': 'По Москве и МО',
+  'product.quantityLabel': 'Количество (шт)',
+  'product.totalLabel': 'Сумма:',
+  'product.addToCart': 'Добавить в корзину',
+  'product.added': 'Добавлено!',
+  'product.requestQuote': 'Запросить КП',
+  'product.related': 'Похожие товары',
+
+  // Footer
+  'footer.catalog.title': 'Каталог',
+  'footer.info.title': 'Информация',
+  'footer.contacts.title': 'Контакты',
 
   // Images
   'home.hero.image': '',

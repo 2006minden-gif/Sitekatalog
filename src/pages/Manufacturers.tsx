@@ -1,24 +1,26 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ExternalLink, Globe } from 'lucide-react';
-import { manufacturers, products } from '../data/products';
+import { Search, Globe } from 'lucide-react';
+import { products } from '../data/products';
 import { useContent } from '../context/ContentContext';
 import EditableText from '../components/EditableText';
+import EditableList from '../components/EditableList';
 
 export default function Manufacturers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeLetter, setActiveLetter] = useState('');
-  const { isAdmin, isEditMode } = useContent();
+  const { content, isAdmin, isEditMode } = useContent();
 
+  const manufacturers = content['manufacturers.items'] || [];
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
   const filteredManufacturers = useMemo(() => {
-    return manufacturers.filter(m => {
+    return manufacturers.filter((m: any) => {
       const matchesSearch = !searchQuery || m.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesLetter = !activeLetter || m.name.toUpperCase().startsWith(activeLetter);
       return matchesSearch && matchesLetter;
     });
-  }, [searchQuery, activeLetter]);
+  }, [searchQuery, activeLetter, manufacturers]);
 
   const getProductCount = (manufacturerName: string) => {
     return products.filter(p => p.manufacturer === manufacturerName).length;
@@ -74,35 +76,92 @@ export default function Manufacturers() {
       </div>
 
       {/* Manufacturers grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredManufacturers.map(m => (
-          <div key={m.id} className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center text-2xl shrink-0">
-                {m.logo}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-slate-800 mb-1">{m.name}</h3>
-                <p className="text-sm text-slate-500 mb-2">{m.country}</p>
-                <p className="text-sm text-slate-600 mb-3 line-clamp-2">{m.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-500">
-                    В каталоге: {getProductCount(m.name)} поз.
-                  </span>
-                  <a
-                    href={m.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700"
-                  >
-                    <Globe size={12} /> Сайт
-                  </a>
+      <EditableList
+        contentKey="manufacturers.items"
+        defaultItem={{ id: Date.now().toString(), name: 'Новый производитель', logo: '🏭', country: 'Страна', website: 'https://', description: 'Описание производителя' }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        renderItem={(item, index, isEditing, onChange) => {
+          // If filtering, only show matching
+          if (!isEditing && (searchQuery || activeLetter)) {
+            const matchesSearch = !searchQuery || item.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesLetter = !activeLetter || item.name.toUpperCase().startsWith(activeLetter);
+            if (!matchesSearch || !matchesLetter) return null;
+          }
+
+          return (
+            <div className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-start gap-4">
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={item.logo}
+                    onChange={(e) => onChange({ ...item, logo: e.target.value })}
+                    className="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center text-2xl shrink-0 text-center"
+                    placeholder="🏭"
+                  />
+                ) : (
+                  <div className="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center text-2xl shrink-0">
+                    {item.logo}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={(e) => onChange({ ...item, name: e.target.value })}
+                        className="w-full px-2 py-1 border border-blue-300 rounded font-semibold"
+                        placeholder="Название"
+                      />
+                      <input
+                        type="text"
+                        value={item.country}
+                        onChange={(e) => onChange({ ...item, country: e.target.value })}
+                        className="w-full px-2 py-1 border border-blue-300 rounded text-sm"
+                        placeholder="Страна"
+                      />
+                      <input
+                        type="text"
+                        value={item.website}
+                        onChange={(e) => onChange({ ...item, website: e.target.value })}
+                        className="w-full px-2 py-1 border border-blue-300 rounded text-sm"
+                        placeholder="https://..."
+                      />
+                      <textarea
+                        value={item.description}
+                        onChange={(e) => onChange({ ...item, description: e.target.value })}
+                        className="w-full px-2 py-1 border border-blue-300 rounded text-sm"
+                        rows={2}
+                        placeholder="Описание"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <h3 className="font-semibold text-slate-800 mb-1">{item.name}</h3>
+                      <p className="text-sm text-slate-500 mb-2">{item.country}</p>
+                      <p className="text-sm text-slate-600 mb-3 line-clamp-2">{item.description}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-slate-500">
+                          В каталоге: {getProductCount(item.name)} поз.
+                        </span>
+                        <a
+                          href={item.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700"
+                        >
+                          <Globe size={12} /> Сайт
+                        </a>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          );
+        }}
+      />
 
       {filteredManufacturers.length === 0 && (
         <div className="text-center py-12 text-slate-500">

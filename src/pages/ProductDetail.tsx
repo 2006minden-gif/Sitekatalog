@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ShoppingCart, FileText, ArrowLeft, Package, Truck, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useCatalog } from '../context/CatalogContext';
+import EditableText from '../components/EditableText';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -65,7 +66,12 @@ export default function ProductDetail() {
             <p className="text-slate-600 mb-6">{product.description}</p>
 
             {/* Specs table */}
-            <h3 className="font-semibold text-slate-800 mb-3">Характеристики</h3>
+            <EditableText 
+              contentKey="product.characteristics" 
+              as="h3" 
+              className="font-semibold text-slate-800 mb-3 block"
+              defaultValue="Характеристики"
+            />
             <div className="border border-slate-200 rounded-lg overflow-hidden mb-6">
               <table className="w-full text-sm">
                 <tbody>

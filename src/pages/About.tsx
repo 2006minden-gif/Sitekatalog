@@ -179,15 +179,44 @@ export default function About() {
 
       {/* Certificates */}
       <div className="mb-12">
-        <h2 className="text-2xl font-bold text-slate-800 mb-6">Сертификаты и лицензии</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {['Сертификат дистрибьютора ST', 'Авторизация Infineon', 'ISO 9001:2015', 'Сертификат TI'].map((cert, i) => (
-            <div key={i} className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-md transition-shadow">
-              <Award size={32} className="text-blue-600 mx-auto mb-3" />
-              <div className="text-sm font-medium text-slate-700">{cert}</div>
+        <EditableText 
+          contentKey="about.certificates.title" 
+          as="h2" 
+          className="text-2xl font-bold text-slate-800 mb-6 block"
+          defaultValue="Сертификаты и лицензии"
+        />
+        <EditableList
+          contentKey="about.certificates"
+          defaultItem={{ title: 'Новый сертификат', icon: '🏆' }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          renderItem={(item, index, isEditing, onChange) => (
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-md transition-shadow">
+              {isEditing ? (
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={item.icon}
+                    onChange={(e) => onChange({ ...item, icon: e.target.value })}
+                    className="w-full text-4xl text-center px-2 py-1 border border-blue-300 rounded"
+                    placeholder="🏆"
+                  />
+                  <input
+                    type="text"
+                    value={item.title}
+                    onChange={(e) => onChange({ ...item, title: e.target.value })}
+                    className="w-full px-2 py-1 border border-blue-300 rounded text-sm"
+                    placeholder="Название сертификата"
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="text-4xl mb-3">{item.icon}</div>
+                  <div className="text-sm font-medium text-slate-700">{item.title}</div>
+                </>
+              )}
             </div>
-          ))}
-        </div>
+          )}
+        />
       </div>
 
       {/* CTA */}

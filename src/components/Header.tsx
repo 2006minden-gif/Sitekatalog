@@ -15,12 +15,13 @@ export default function Header() {
   const { isAdmin } = useContent();
   const location = useLocation();
 
+  const { content } = useContent();
   const navLinks = [
-    { to: '/catalog', label: 'Каталог' },
-    { to: '/about', label: 'О компании' },
-    { to: '/manufacturers', label: 'Производители' },
-    { to: '/news', label: 'Новости' },
-    { to: '/contacts', label: 'Контакты' },
+    { to: '/catalog', label: content['header.nav.catalog'] || 'Каталог' },
+    { to: '/about', label: content['header.nav.about'] || 'О компании' },
+    { to: '/manufacturers', label: content['header.nav.manufacturers'] || 'Производители' },
+    { to: '/news', label: content['header.nav.news'] || 'Новости' },
+    { to: '/contacts', label: content['header.nav.contacts'] || 'Контакты' },
   ];
 
   return (
@@ -172,9 +173,9 @@ export default function Header() {
             ))}
 
             <div className="ml-auto flex items-center gap-4 text-sm text-slate-600">
-              <Link to="/delivery" className="hover:text-blue-600">Доставка</Link>
-              <Link to="/payment" className="hover:text-blue-600">Оплата</Link>
-              <Link to="/documents" className="hover:text-blue-600">Документы</Link>
+              <Link to="/delivery" className="hover:text-blue-600">{content['header.nav.delivery'] || 'Доставка'}</Link>
+              <Link to="/payment" className="hover:text-blue-600">{content['header.nav.payment'] || 'Оплата'}</Link>
+              <Link to="/documents" className="hover:text-blue-600">{content['header.nav.documents'] || 'Документы'}</Link>
             </div>
           </div>
         </div>

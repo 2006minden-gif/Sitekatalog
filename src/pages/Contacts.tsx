@@ -232,22 +232,22 @@ export default function Contacts() {
         <button className="flex items-center gap-3 p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all">
           <PhoneCall size={24} className="text-blue-600" />
           <div>
-            <div className="font-medium text-slate-800">Заказать звонок</div>
-            <div className="text-sm text-slate-500">Перезвоним за 5 минут</div>
+            <EditableText contentKey="contacts.quickActions.callback" as="div" className="font-medium text-slate-800" defaultValue="Заказать звонок" />
+            <EditableText contentKey="contacts.quickActions.callbackDesc" as="div" className="text-sm text-slate-500" defaultValue="Перезвоним за 5 минут" />
           </div>
         </button>
         <button className="flex items-center gap-3 p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all">
           <MessageSquare size={24} className="text-blue-600" />
           <div>
-            <div className="font-medium text-slate-800">Написать в отдел продаж</div>
-            <div className="text-sm text-slate-500">sales@electroopt.ru</div>
+            <EditableText contentKey="contacts.quickActions.sales" as="div" className="font-medium text-slate-800" defaultValue="Написать в отдел продаж" />
+            <EditableText contentKey="contacts.quickActions.salesDesc" as="div" className="text-sm text-slate-500" defaultValue="sales@electroopt.ru" />
           </div>
         </button>
         <button className="flex items-center gap-3 p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all">
           <FileText size={24} className="text-blue-600" />
           <div>
-            <div className="font-medium text-slate-800">Запросить КП</div>
-            <div className="text-sm text-slate-500">Ответ в течение 2 часов</div>
+            <EditableText contentKey="contacts.quickActions.quote" as="div" className="font-medium text-slate-800" defaultValue="Запросить КП" />
+            <EditableText contentKey="contacts.quickActions.quoteDesc" as="div" className="text-sm text-slate-500" defaultValue="Ответ в течение 2 часов" />
           </div>
         </button>
       </div>
