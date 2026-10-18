@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Package, Truck, Shield, Clock, Search, BarChart3, Users } from 'lucide-react';
-import { categories, products, news } from '../data/products';
+import { news } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useContent } from '../context/ContentContext';
+import { useCatalog } from '../context/CatalogContext';
 import EditableText from '../components/EditableText';
 import EditableList from '../components/EditableList';
 
 export default function Home() {
   const { addToCart } = useCart();
   const { content, isAdmin, isEditMode } = useContent();
+  const { products, categories } = useCatalog();
   const featuredProducts = products.slice(0, 6);
   const latestNews = news.slice(0, 3);
 
@@ -121,7 +123,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {categories.map(cat => (
+            {categories.map((cat: any) => (
               <Link
                 key={cat.id}
                 to={`/catalog?category=${cat.id}`}
@@ -130,7 +132,7 @@ export default function Home() {
                 <h3 className="font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">{cat.name}</h3>
                 <p className="text-sm text-slate-500 mt-1">{cat.subcategories.length} подкатегорий</p>
                 <p className="text-sm text-blue-600 mt-2">
-                  {cat.subcategories.reduce((s, sub) => s + sub.count, 0).toLocaleString()} позиций
+                  {cat.subcategories.reduce((s: number, sub: any) => s + sub.count, 0).toLocaleString()} позиций
                 </p>
               </Link>
             ))}
@@ -160,7 +162,7 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {featuredProducts.map(product => (
+                {featuredProducts.map((product: any) => (
                   <tr key={product.id} className="border-b border-slate-100 hover:bg-slate-50">
                     <td className="py-3 px-4">
                       <Link to={`/product/${product.id}`} className="text-blue-600 hover:text-blue-700 font-mono text-xs">

@@ -5,6 +5,7 @@ import { useContent } from '../context/ContentContext';
 import EditableText from '../components/EditableText';
 import EditableList from '../components/EditableList';
 import EditableTable from '../components/EditableTable';
+import EditableFile from '../components/EditableFile';
 
 export function Delivery() {
   const { isAdmin, isEditMode } = useContent();
@@ -156,6 +157,67 @@ export function Payment() {
   );
 }
 
+function DocumentsList() {
+  const { content, updateContent, isAdmin, isEditMode } = useContent();
+  const templates = content['documents.templates'] || [];
+
+  const handleAdd = () => {
+    const newDoc = { id: `doc-${Date.now()}`, label: 'Новый документ' };
+    updateContent('documents.templates', [...templates, newDoc]);
+  };
+
+  const handleDelete = (id: string) => {
+    updateContent('documents.templates', templates.filter((t: any) => t.id !== id));
+  };
+
+  const handleLabelChange = (id: string, newLabel: string) => {
+    updateContent('documents.templates', templates.map((t: any) => 
+      t.id === id ? { ...t, label: newLabel } : t
+    ));
+  };
+
+  return (
+    <div>
+      <div className="space-y-3">
+        {templates.map((doc: any) => (
+          <div key={doc.id} className="relative group">
+            <EditableFile
+              contentKey={`documents.file.${doc.id}`}
+              label={doc.label}
+              className=""
+            />
+            {isAdmin && isEditMode && (
+              <div className="flex gap-1 mt-2">
+                <input
+                  type="text"
+                  value={doc.label}
+                  onChange={(e) => handleLabelChange(doc.id, e.target.value)}
+                  className="flex-1 px-2 py-1 border border-blue-300 rounded text-sm"
+                  placeholder="Название документа"
+                />
+                <button
+                  onClick={() => handleDelete(doc.id)}
+                  className="px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+                >
+                  Удалить
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {isAdmin && isEditMode && (
+        <button
+          onClick={handleAdd}
+          className="mt-4 w-full py-2 border-2 border-dashed border-blue-300 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-sm"
+        >
+          + Добавить документ
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function Documents() {
   const { isAdmin, isEditMode } = useContent();
   return (
@@ -189,28 +251,7 @@ export function Documents() {
             className="text-xl font-semibold text-slate-800 mb-4 block"
             defaultValue="Типовые документы"
           />
-          <EditableList
-            contentKey="documents.templates"
-            defaultItem="Новый документ"
-            className="space-y-3"
-            renderItem={(item, index, isEditing, onChange) => (
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={item}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="flex-1 px-2 py-1 border border-blue-300 rounded text-sm"
-                  />
-                ) : (
-                  <>
-                    <span className="text-sm text-slate-700">{item}</span>
-                    <button className="text-sm text-blue-600 hover:text-blue-700">Скачать</button>
-                  </>
-                )}
-              </div>
-            )}
-          />
+          <DocumentsList />
         </div>
       </div>
     </div>

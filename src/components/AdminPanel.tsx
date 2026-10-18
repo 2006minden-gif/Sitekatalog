@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useContent } from '../context/ContentContext';
-import { Settings, Edit3, Eye, LogOut, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Settings, Edit3, Eye, LogOut, X, ChevronDown, ChevronUp, Package } from 'lucide-react';
 
 export default function AdminPanel() {
   const { isAdmin, isEditMode, toggleEditMode, logout } = useContent();
@@ -54,6 +55,13 @@ export default function AdminPanel() {
                 </p>
               </div>
             )}
+
+            <Link
+              to="/admin/catalog"
+              className="w-full py-2.5 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <Package size={16} /> Управление каталогом
+            </Link>
 
             <button
               onClick={logout}

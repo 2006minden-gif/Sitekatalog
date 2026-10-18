@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { ContentProvider } from './context/ContentContext';
+import { CatalogProvider } from './context/CatalogContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import AdminPanel from './components/AdminPanel';
@@ -15,6 +16,7 @@ import Contacts from './pages/Contacts';
 import Cart from './pages/Cart';
 import Account from './pages/Account';
 import AdminLogin from './pages/AdminLogin';
+import AdminCatalog from './pages/AdminCatalog';
 import { Delivery, Payment, Documents, Privacy, Sitemap } from './pages/StaticPages';
 
 function ScrollToTop() {
@@ -39,35 +41,38 @@ function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <ContentProvider>
-      <CartProvider>
-        <HashRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="*" element={
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/catalog" element={<Catalog />} />
-                  <Route path="/product/:id" element={<ProductDetail />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/news" element={<NewsList />} />
-                  <Route path="/news/:id" element={<NewsDetail />} />
-                  <Route path="/manufacturers" element={<Manufacturers />} />
-                  <Route path="/contacts" element={<Contacts />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/account" element={<Account />} />
-                  <Route path="/delivery" element={<Delivery />} />
-                  <Route path="/payment" element={<Payment />} />
-                  <Route path="/documents" element={<Documents />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/sitemap" element={<Sitemap />} />
-                </Routes>
-              </Layout>
-            } />
-          </Routes>
-        </HashRouter>
-      </CartProvider>
+      <CatalogProvider>
+        <CartProvider>
+          <HashRouter>
+            <ScrollToTop />
+            <Routes>
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="*" element={
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/catalog" element={<Catalog />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/news" element={<NewsList />} />
+                    <Route path="/news/:id" element={<NewsDetail />} />
+                    <Route path="/manufacturers" element={<Manufacturers />} />
+                    <Route path="/contacts" element={<Contacts />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/account" element={<Account />} />
+                    <Route path="/admin/catalog" element={<AdminCatalog />} />
+                    <Route path="/delivery" element={<Delivery />} />
+                    <Route path="/payment" element={<Payment />} />
+                    <Route path="/documents" element={<Documents />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/sitemap" element={<Sitemap />} />
+                  </Routes>
+                </Layout>
+              } />
+            </Routes>
+          </HashRouter>
+        </CartProvider>
+      </CatalogProvider>
     </ContentProvider>
   );
 }

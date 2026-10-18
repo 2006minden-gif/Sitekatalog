@@ -159,11 +159,11 @@ const defaultContent: ContentData = {
   ],
   'documents.templates.title': 'Типовые документы',
   'documents.templates': [
-    'Договор поставки (шаблон)',
-    'Карточка предприятия',
-    'Доверенность на получение ТМЦ',
-    'Спецификация (шаблон)',
-    'Заявка на возврат',
+    { id: 'contract', label: 'Договор поставки (шаблон)' },
+    { id: 'card', label: 'Карточка предприятия' },
+    { id: 'power-of-attorney', label: 'Доверенность на получение ТМЦ' },
+    { id: 'specification', label: 'Спецификация (шаблон)' },
+    { id: 'return', label: 'Заявка на возврат' },
   ],
 
   // Privacy

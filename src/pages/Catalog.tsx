@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Search, Filter, ChevronDown, Grid, List } from 'lucide-react';
-import { products, categories } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useCatalog } from '../context/CatalogContext';
 
 export default function Catalog() {
   const [searchParams] = useSearchParams();
-  const categoryFilter = searchParams.get('category') || '';
-  const subcategoryFilter = searchParams.get('subcategory') || '';
+  const categoryFilter = (searchParams.get('category') as string) || '';
+  const subcategoryFilter = (searchParams.get('subcategory') as string) || '';
   
   const [searchQuery, setSearchQuery] = useState('');
   const [manufacturerFilter, setManufacturerFilter] = useState('');
@@ -15,14 +15,15 @@ export default function Catalog() {
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [showFilters, setShowFilters] = useState(true);
   const { addToCart } = useCart();
+  const { products, categories } = useCatalog();
 
   const manufacturers = useMemo(() => {
-    const unique = [...new Set(products.map(p => p.manufacturer))];
+    const unique = [...new Set(products.map((p: any) => p.manufacturer))];
     return unique.sort();
-  }, []);
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    return products.filter((p: any) => {
       const matchesSearch = !searchQuery || 
         p.partNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -64,7 +65,7 @@ export default function Catalog() {
               >
                 Все категории
               </button>
-              {categories.map(cat => (
+              {categories.map((cat: any) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
@@ -144,9 +145,8 @@ export default function Catalog() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredProducts.map(product => (
-                      <tr key={product.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                        <td className="py-3 px-4">
+                {filteredProducts.map((product: any) => (
+                  <tr key={product.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">                        <td className="py-3 px-4">
                           <Link to={`/product/${product.id}`} className="text-blue-600 hover:text-blue-700 font-mono text-xs">
                             {product.partNumber}
                           </Link>
@@ -187,7 +187,7 @@ export default function Catalog() {
           ) : (
             /* Grid view */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredProducts.map(product => (
+              {filteredProducts.map((product: any) => (
                 <div key={product.id} className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
                   <Link to={`/product/${product.id}`}>
                     <div className="font-mono text-xs text-blue-600 mb-1">{product.partNumber}</div>
