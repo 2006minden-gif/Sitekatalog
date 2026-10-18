@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
+import EditableText from './EditableText';
 
 export default function Footer() {
+  const { isAdmin, isEditMode } = useContent();
   return (
     <footer className="bg-slate-800 text-white">
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -14,14 +17,17 @@ export default function Footer() {
                 <span className="text-white font-bold text-lg">Э</span>
               </div>
               <div>
-                <div className="font-bold text-lg">ЭлектроОпт</div>
-                <div className="text-xs text-slate-400">Электронные компоненты</div>
+                <EditableText contentKey="header.companyName" as="div" className="font-bold text-lg" defaultValue="ЭлектроОпт" />
+                <EditableText contentKey="header.companyDesc" as="div" className="text-xs text-slate-400" defaultValue="Электронные компоненты" />
               </div>
             </div>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Оптовые поставки электронных компонентов от ведущих мировых производителей. 
-              Более 50 000 наименований на складе.
-            </p>
+            <EditableText 
+              contentKey="footer.description" 
+              as="p" 
+              className="text-slate-400 text-sm leading-relaxed block" 
+              multiline
+              defaultValue="Оптовые поставки электронных компонентов от ведущих мировых производителей. Более 50 000 наименований на складе."
+            />
           </div>
 
           {/* Catalog */}
@@ -77,7 +83,12 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-slate-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-slate-400">© 2026 ЭлектроОпт. Все права защищены.</p>
+          <EditableText 
+            contentKey="footer.copyright" 
+            as="p" 
+            className="text-sm text-slate-400"
+            defaultValue="© 2026 ЭлектроОпт. Все права защищены."
+          />
           <div className="flex gap-4 text-sm text-slate-400">
             <Link to="/sitemap" className="hover:text-white">Карта сайта</Link>
             <Link to="/privacy" className="hover:text-white">Политика конфиденциальности</Link>

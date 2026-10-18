@@ -2,10 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ExternalLink, Globe } from 'lucide-react';
 import { manufacturers, products } from '../data/products';
+import { useContent } from '../context/ContentContext';
+import EditableText from '../components/EditableText';
 
 export default function Manufacturers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeLetter, setActiveLetter] = useState('');
+  const { isAdmin, isEditMode } = useContent();
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -29,7 +32,7 @@ export default function Manufacturers() {
         <span className="text-slate-800">Производители</span>
       </nav>
 
-      <h1 className="text-3xl font-bold text-slate-800 mb-8">Производители</h1>
+      <EditableText contentKey="manufacturers.title" as="h1" className="text-3xl font-bold text-slate-800 mb-8 block" defaultValue="Производители" />
 
       {/* Search */}
       <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
