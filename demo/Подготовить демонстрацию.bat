@@ -1,39 +1,38 @@
 @echo off
-chcp 65001 >nul
 echo ========================================
-echo   Подготовка демонстрации сайта
+echo   ElectroOpt - Prepare Demo
 echo ========================================
 echo.
-echo Копирование файлов из dist...
+echo Copying files from dist folder...
 echo.
 
 xcopy /E /Y /I "..\dist\*" "." >nul 2>&1
 
 if %errorlevel% neq 0 (
-    echo ОШИБКА: Не удалось скопировать файлы.
-    echo Убедитесь, что проект собран (npm run build)
+    echo ERROR: Failed to copy files.
+    echo Make sure the project is built (npm run build)
     pause
     exit /b 1
 )
 
-echo Файлы скопированы успешно!
+echo Files copied successfully!
 echo.
-echo Открываю сайт в браузере...
+echo Opening website in browser...
 echo.
 
-start "" "index.html"
+start "" "%~dp0index.html"
 
 echo.
 echo ========================================
-echo   Сайт открыт в браузере!
+echo   Website opened in your browser!
 echo ========================================
 echo.
-echo Для входа в режим администратора:
-echo 1. Прокрутите страницу вниз
-echo 2. Нажмите "Админ" в подвале сайта
-echo 3. Введите пароль: admin123
+echo To access admin mode:
+echo   1. Scroll to the bottom of the page
+echo   2. Click "Admin" link in the footer
+echo   3. Enter password: admin123
 echo.
-echo Для управления каталогом:
-echo - Нажмите "Управление каталогом" в панели админа
+echo To manage catalog:
+echo   - Click "Manage Catalog" in admin panel
 echo.
 pause

@@ -1,18 +1,17 @@
 @echo off
 echo ========================================
-echo   ЭлектроОпт - Запуск сайта
+echo   ElectroOpt - Launch Website
 echo ========================================
 echo.
-echo Открываю сайт в браузере...
-echo.
 
-start "" "index.html"
+start "" "%~dp0index.html"
 
 echo.
-echo Сайт открыт в браузере по умолчанию.
+echo The site has been opened in your default browser.
 echo.
-echo Для входа в режим администратора:
-echo 1. Нажмите "Админ" в подвале сайта
-echo 2. Введите пароль: admin123
+echo To access admin mode:
+echo   1. Scroll to the bottom of the page
+echo   2. Click "Admin" link in the footer
+echo   3. Enter password: admin123
 echo.
 pause
