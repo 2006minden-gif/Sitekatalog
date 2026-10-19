@@ -1,0 +1,343 @@
+export interface Product {
+  id: string;
+  partNumber: string;
+  name: string;
+  manufacturer: string;
+  category: string;
+  subcategory: string;
+  description: string;
+  note: string;
+  price: number;
+  stock: number;
+  deliveryDays: number;
+  specs: Record<string, string>;
+  datasheet?: string;
+  image?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  subcategories: { id: string; name: string; count: number }[];
+}
+
+export const categories: Category[] = [
+  {
+    id: 'resistors',
+    name: 'Резисторы',
+    subcategories: [
+      { id: 'smd-resistors', name: 'SMD резисторы', count: 1240 },
+      { id: 'through-hole-resistors', name: 'Выводные резисторы', count: 856 },
+      { id: 'precision-resistors', name: 'Прецизионные резисторы', count: 312 },
+      { id: 'variable-resistors', name: 'Переменные резисторы', count: 187 },
+    ],
+  },
+  {
+    id: 'capacitors',
+    name: 'Конденсаторы',
+    subcategories: [
+      { id: 'ceramic-capacitors', name: 'Керамические конденсаторы', count: 2150 },
+      { id: 'electrolytic-capacitors', name: 'Электролитические конденсаторы', count: 980 },
+      { id: 'film-capacitors', name: 'Плёночные конденсаторы', count: 445 },
+      { id: 'tantalum-capacitors', name: 'Танталовые конденсаторы', count: 267 },
+    ],
+  },
+  {
+    id: 'ics',
+    name: 'Микросхемы',
+    subcategories: [
+      { id: 'microcontrollers', name: 'Микроконтроллеры', count: 534 },
+      { id: 'memory-ics', name: 'Память', count: 312 },
+      { id: 'logic-ics', name: 'Логические ИС', count: 678 },
+      { id: 'power-ics', name: 'Силовые ИС', count: 445 },
+      { id: 'analog-ics', name: 'Аналоговые ИС', count: 890 },
+    ],
+  },
+  {
+    id: 'transistors',
+    name: 'Транзисторы',
+    subcategories: [
+      { id: 'bjt', name: 'Биполярные транзисторы', count: 423 },
+      { id: 'mosfet', name: 'MOSFET', count: 567 },
+      { id: 'igbt', name: 'IGBT', count: 189 },
+    ],
+  },
+  {
+    id: 'connectors',
+    name: 'Коннекторы',
+    subcategories: [
+      { id: 'pcb-connectors', name: 'Разъёмы для печатных плат', count: 1340 },
+      { id: 'cable-connectors', name: 'Кабельные разъёмы', count: 890 },
+      { id: 'terminal-blocks', name: 'Клеммные колодки', count: 456 },
+    ],
+  },
+  {
+    id: 'inductors',
+    name: 'Индуктивности',
+    subcategories: [
+      { id: 'smd-inductors', name: 'SMD дроссели', count: 345 },
+      { id: 'power-inductors', name: 'Силовые дроссели', count: 234 },
+      { id: 'transformers', name: 'Трансформаторы', count: 178 },
+    ],
+  },
+  {
+    id: 'diodes',
+    name: 'Диоды',
+    subcategories: [
+      { id: 'rectifier-diodes', name: 'Выпрямительные диоды', count: 567 },
+      { id: 'zener-diodes', name: 'Стабилитроны', count: 345 },
+      { id: 'schottky-diodes', name: 'Диоды Шоттки', count: 289 },
+      { id: 'leds', name: 'Светодиоды', count: 678 },
+    ],
+  },
+  {
+    id: 'mechanical',
+    name: 'Механические компоненты',
+    subcategories: [
+      { id: 'switches', name: 'Переключатели', count: 456 },
+      { id: 'relays', name: 'Реле', count: 234 },
+      { id: 'fuses', name: 'Предохранители', count: 345 },
+    ],
+  },
+];
+
+export const products: Product[] = [
+  {
+    id: '1',
+    partNumber: 'RC0402FR-0710KL',
+    name: 'Резистор SMD 0402 10кОм 1%',
+    manufacturer: 'Yageo',
+    category: 'resistors',
+    subcategory: 'smd-resistors',
+    description: 'SMD резистор в корпусе 0402, сопротивление 10кОм, допуск 1%, мощность 0.063Вт',
+    note: 'Минимальная партия 10000шт',
+    price: 0.003,
+    stock: 2500000,
+    deliveryDays: 3,
+    specs: { 'Корпус': '0402', 'Сопротивление': '10кОм', 'Допуск': '1%', 'Мощность': '0.063Вт', 'Рабочая температура': '-55...+155°C' },
+    datasheet: '#',
+  },
+  {
+    id: '2',
+    partNumber: 'GRM155R71C104KA88D',
+    name: 'Конденсатор керамический 0402 100нФ 16В',
+    manufacturer: 'Murata',
+    category: 'capacitors',
+    subcategory: 'ceramic-capacitors',
+    description: 'MLCC конденсатор в корпусе 0402, ёмкость 100нФ, напряжение 16В, диэлектрик X7R',
+    note: 'В наличии на складе',
+    price: 0.005,
+    stock: 1800000,
+    deliveryDays: 2,
+    specs: { 'Корпус': '0402', 'Ёмкость': '100нФ', 'Напряжение': '16В', 'Диэлектрик': 'X7R', 'Допуск': '10%' },
+    datasheet: '#',
+  },
+  {
+    id: '3',
+    partNumber: 'STM32F103C8T6',
+    name: 'Микроконтроллер STM32F103C8T6',
+    manufacturer: 'STMicroelectronics',
+    category: 'ics',
+    subcategory: 'microcontrollers',
+    description: 'ARM Cortex-M3 микроконтроллер, 72МГц, 64КБ Flash, 20КБ SRAM, LQFP-48',
+    note: 'Популярная модель',
+    price: 3.45,
+    stock: 15000,
+    deliveryDays: 5,
+    specs: { 'Ядро': 'ARM Cortex-M3', 'Частота': '72МГц', 'Flash': '64КБ', 'SRAM': '20КБ', 'Корпус': 'LQFP-48', 'I/O': '37' },
+    datasheet: '#',
+  },
+  {
+    id: '4',
+    partNumber: 'IRLZ44NPBF',
+    name: 'MOSFET N-канал 55В 50A TO-220',
+    manufacturer: 'Infineon',
+    category: 'transistors',
+    subcategory: 'mosfet',
+    description: 'N-канальный MOSFET, напряжение сток-исток 55В, ток стока 50А, RDS(on) 22мОм',
+    note: 'Логический уровень затвора',
+    price: 1.85,
+    stock: 8500,
+    deliveryDays: 4,
+    specs: { 'Тип': 'N-канал', 'Vds': '55В', 'Id': '50А', 'RDS(on)': '22мОм', 'Корпус': 'TO-220AB', 'Vgs(th)': '2В' },
+    datasheet: '#',
+  },
+  {
+    id: '5',
+    partNumber: 'LM7805CT',
+    name: 'Стабилизатор напряжения 5В 1.5А TO-220',
+    manufacturer: 'Texas Instruments',
+    category: 'ics',
+    subcategory: 'power-ics',
+    description: 'Линейный стабилизатор напряжения +5В, ток до 1.5А, защита от перегрева и КЗ',
+    note: 'Классическая серия',
+    price: 0.45,
+    stock: 45000,
+    deliveryDays: 3,
+    specs: { 'Выходное напряжение': '5В', 'Макс. ток': '1.5А', 'Входное напряжение': '7-35В', 'Корпус': 'TO-220', 'Точность': '4%' },
+    datasheet: '#',
+  },
+  {
+    id: '6',
+    partNumber: 'ATMEGA328P-AU',
+    name: 'Микроконтроллер ATmega328P TQFP-32',
+    manufacturer: 'Microchip',
+    category: 'ics',
+    subcategory: 'microcontrollers',
+    description: '8-битный AVR микроконтроллер, 20МГц, 32КБ Flash, 2КБ SRAM, 1КБ EEPROM',
+    note: 'Используется в Arduino',
+    price: 2.80,
+    stock: 12000,
+    deliveryDays: 5,
+    specs: { 'Ядро': 'AVR 8-bit', 'Частота': '20МГц', 'Flash': '32КБ', 'SRAM': '2КБ', 'EEPROM': '1КБ', 'Корпус': 'TQFP-32' },
+    datasheet: '#',
+  },
+  {
+    id: '7',
+    partNumber: 'SN74HC595DR',
+    name: 'Сдвиговый регистр 8-бит SOIC-16',
+    manufacturer: 'Texas Instruments',
+    category: 'ics',
+    subcategory: 'logic-ics',
+    description: '8-битный сдвиговый регистр с триггерной защёлкой и 3-стабильными выходами',
+    note: 'Каскадируемый',
+    price: 0.32,
+    stock: 67000,
+    deliveryDays: 3,
+    specs: { 'Разрядность': '8 бит', 'Напряжение питания': '2-6В', 'Частота': '25МГц', 'Корпус': 'SOIC-16', 'Тип': 'Сдвиговый регистр' },
+    datasheet: '#',
+  },
+  {
+    id: '8',
+    partNumber: 'BC847BLT1G',
+    name: 'Транзистор NPN SOT-23',
+    manufacturer: 'onsemi',
+    category: 'transistors',
+    subcategory: 'bjt',
+    description: 'NPN биполярный транзистор общего назначения, Vce=45В, Ic=100мА, hFE=200-450',
+    note: 'Группа B',
+    price: 0.02,
+    stock: 3200000,
+    deliveryDays: 2,
+    specs: { 'Тип': 'NPN', 'Vce': '45В', 'Ic': '100мА', 'hFE': '200-450', 'Корпус': 'SOT-23', 'Ft': '100МГц' },
+    datasheet: '#',
+  },
+  {
+    id: '9',
+    partNumber: 'W25Q128JVSIQ',
+    name: 'Flash память 128Мбит SPI SOIC-8',
+    manufacturer: 'Winbond',
+    category: 'ics',
+    subcategory: 'memory-ics',
+    description: 'Serial Flash память 128Мбит (16МБ), интерфейс SPI, напряжение 2.7-3.6В',
+    note: 'Industrial grade',
+    price: 1.20,
+    stock: 25000,
+    deliveryDays: 4,
+    specs: { 'Объём': '128Мбит (16МБ)', 'Интерфейс': 'SPI', 'Напряжение': '2.7-3.6В', 'Частота': '133МГц', 'Корпус': 'SOIC-8', 'Температура': '-40...+85°C' },
+    datasheet: '#',
+  },
+  {
+    id: '10',
+    partNumber: 'USB-MICRO-B-SMD',
+    name: 'Разъём USB Micro-B female SMD',
+    manufacturer: 'Molex',
+    category: 'connectors',
+    subcategory: 'pcb-connectors',
+    description: 'Разъём USB 2.0 Micro-B, тип female, монтаж на поверхность платы, экранированный',
+    note: 'Усиленные крепления',
+    price: 0.35,
+    stock: 89000,
+    deliveryDays: 3,
+    specs: { 'Тип': 'USB 2.0 Micro-B', 'Контакт': 'Female', 'Монтаж': 'SMD', 'Экран': 'Да', 'Ресурс': '10000 циклов' },
+    datasheet: '#',
+  },
+  {
+    id: '11',
+    partNumber: 'SS34',
+    name: 'Диод Шоттки 40В 3А SMA',
+    manufacturer: 'Vishay',
+    category: 'diodes',
+    subcategory: 'schottky-diodes',
+    description: 'Диод Шоттки, обратное напряжение 40В, прямой ток 3А, Vf=0.55В',
+    note: 'Универсальный',
+    price: 0.08,
+    stock: 156000,
+    deliveryDays: 2,
+    specs: { 'Vr': '40В', 'If': '3А', 'Vf': '0.55В', 'Корпус': 'SMA (DO-214AC)', 'Тип': 'Шоттки' },
+    datasheet: '#',
+  },
+  {
+    id: '12',
+    partNumber: 'CPC1017N',
+    name: 'Оптореле SSR 60мА 350В SOP-4',
+    manufacturer: 'IXYS',
+    category: 'mechanical',
+    subcategory: 'relays',
+    description: 'Твердотельное реле, ток нагрузки до 60мА, напряжение до 350В, изоляция 1500В',
+    note: 'Миниатюрный корпус',
+    price: 1.65,
+    stock: 4500,
+    deliveryDays: 7,
+    specs: { 'Ток нагрузки': '60мА', 'Напряжение': '350В', 'Изоляция': '1500В', 'Корпус': 'SOP-4', 'Тип': 'OptoMOS' },
+    datasheet: '#',
+  },
+];
+
+export const manufacturers = [
+  { id: '1', name: 'STMicroelectronics', logo: '🔵', country: 'Швейцария', website: 'https://www.st.com', description: 'Полупроводниковые компоненты и решения для электроники' },
+  { id: '2', name: 'Texas Instruments', logo: '🔴', country: 'США', website: 'https://www.ti.com', description: 'Аналоговые и встраиваемые процессоры' },
+  { id: '3', name: 'Infineon', logo: '🟢', country: 'Германия', website: 'https://www.infineon.com', description: 'Силовые полупроводники и системы безопасности' },
+  { id: '4', name: 'Murata', logo: '🟡', country: 'Япония', website: 'https://www.murata.com', description: 'Электронные компоненты и модули связи' },
+  { id: '5', name: 'Yageo', logo: '🟠', country: 'Тайвань', website: 'https://www.yageo.com', description: 'Пассивные компоненты: резисторы, конденсаторы' },
+  { id: '6', name: 'Microchip', logo: '🟣', country: 'США', website: 'https://www.microchip.com', description: 'Микроконтроллеры, память и аналоговые ИС' },
+  { id: '7', name: 'onsemi', logo: '⚪', country: 'США', website: 'https://www.onsemi.com', description: 'Силовые и сенсорные решения' },
+  { id: '8', name: 'Vishay', logo: '🔵', country: 'США', website: 'https://www.vishay.com', description: 'Дискретные компоненты и пассивные элементы' },
+  { id: '9', name: 'Molex', logo: '🟤', country: 'США', website: 'https://www.molex.com', description: 'Коннекторы и интерконнект-решения' },
+  { id: '10', name: 'Winbond', logo: '⚫', country: 'Тайвань', website: 'https://www.winbond.com', description: 'Память и специализированные ИС' },
+  { id: '11', name: 'IXYS', logo: '🔶', country: 'США', website: 'https://www.ixys.com', description: 'Силовые полупроводники и оптоэлектроника' },
+  { id: '12', name: 'NXP', logo: '🔷', country: 'Нидерланды', website: 'https://www.nxp.com', description: 'Встраиваемые процессоры и IoT решения' },
+];
+
+export const news = [
+  {
+    id: '1',
+    title: 'Расширение ассортимента микроконтроллеров STM32',
+    date: '2026-01-15',
+    image: '',
+    excerpt: 'Мы добавили в каталог более 50 новых моделей микроконтроллеров STM32, включая серии H7 и U5.',
+    content: 'Рады сообщить о значительном расширении ассортимента микроконтроллеров STM32. В каталог добавлены модели серий H7, U5 и G4, которые отличаются высокой производительностью и энергоэффективностью. Все позиции доступны со склада в Москве с доставкой по всей России.',
+  },
+  {
+    id: '2',
+    title: 'Новые условия для постоянных клиентов',
+    date: '2026-01-10',
+    image: '',
+    excerpt: 'С января 2026 года введена накопительная система скидок для постоянных партнёров.',
+    content: 'С января 2026 года мы вводим новую программу лояльности для постоянных клиентов. Накопительные скидки от 5% до 15% в зависимости от объёма закупок. Подробности у вашего менеджера.',
+  },
+  {
+    id: '3',
+    title: 'Открытие нового склада в Санкт-Петербурге',
+    date: '2025-12-20',
+    image: '',
+    excerpt: 'Для ускорения доставки на Северо-Запад открыт новый складской комплекс.',
+    content: 'Открыт новый складской комплекс в Санкт-Петербурге площадью 2000 кв.м. Это позволит сократить сроки доставки для клиентов Северо-Западного региона до 1 рабочего дня.',
+  },
+  {
+    id: '4',
+    title: 'Партнёрство с Infineon Technologies',
+    date: '2025-12-15',
+    image: '',
+    excerpt: 'Подписан прямой контракт с Infineon, обеспечивающий лучшие цены на силовые компоненты.',
+    content: 'Мы рады сообщить о подписании прямого контракта с Infineon Technologies. Это гарантирует нашим клиентам оригинальную продукцию по лучшим ценам и приоритетные сроки поставки.',
+  },
+  {
+    id: '5',
+    title: 'Обновление онлайн-каталога',
+    date: '2025-12-01',
+    image: '',
+    excerpt: 'Запущена обновлённая версия каталога с расширенным поиском и фильтрацией.',
+    content: 'Представляем обновлённую версию онлайн-каталога. Новые возможности: расширенный поиск по параметрам, сравнение товаров, быстрое формирование заявки из каталога.',
+  },
+];
