@@ -28,7 +28,7 @@ export default function AdminCatalog() {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<Product>>({});
-  const [importResult, setImportResult] = useState<{ success: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ success: number; updated: number; errors: string[]; warnings: string[] } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredProducts = products.filter(p => 
@@ -52,40 +52,74 @@ export default function AdminCatalog() {
         const jsonData = XLSX.utils.sheet_to_json(sheet) as any[];
 
         const errors: string[] = [];
+        const warnings: string[] = [];
         const newProducts: Product[] = [];
+        const updatedProducts: Product[] = [];
 
         jsonData.forEach((row, index) => {
           try {
-            const product: Product = {
-              id: row['id'] || row['ID'] || `import-${Date.now()}-${index}`,
-              partNumber: row['partNumber'] || row['Парт-номер'] || row['Артикул'] || '',
-              name: row['name'] || row['Наименование'] || row['Название'] || '',
-              manufacturer: row['manufacturer'] || row['Производитель'] || row['Бренд'] || '',
-              category: row['category'] || row['Категория'] || 'ics',
-              subcategory: row['subcategory'] || row['Подкатегория'] || '',
-              description: row['description'] || row['Описание'] || '',
-              note: row['note'] || row['Примечание'] || '',
-              price: parseFloat(row['price'] || row['Цена'] || '0'),
-              stock: parseInt(row['stock'] || row['Наличие'] || '0'),
-              deliveryDays: parseInt(row['deliveryDays'] || row['Срок поставки'] || '7'),
-              specs: {},
-            };
+            // Поддержка разных названий колонок (русские и английские)
+            const partNumber = row['partNumber'] || row['Парт-номер'] || row['Артикул'] || row['Part Number'] || '';
+            const name = row['name'] || row['Наименование'] || row['Название'] || row['Name'] || '';
+            const manufacturer = row['manufacturer'] || row['Производитель'] || row['Бренд'] || row['Manufacturer'] || '';
+            const category = row['category'] || row['Категория'] || row['Category'] || 'ics';
+            const subcategory = row['subcategory'] || row['Подкатегория'] || row['Subcategory'] || '';
+            const description = row['description'] || row['Описание'] || row['Description'] || '';
+            const note = row['note'] || row['Примечание'] || row['Note'] || '';
+            const price = parseFloat(row['price'] || row['Цена'] || row['Price'] || '0');
+            const stock = parseInt(row['stock'] || row['Наличие'] || row['Stock'] || '0');
+            const deliveryDays = parseInt(row['deliveryDays'] || row['Срок поставки'] || row['Delivery Days'] || '7');
 
-            if (!product.partNumber || !product.name) {
-              errors.push(`Строка ${index + 2}: отсутствуют обязательные поля (парт-номер или наименование)`);
+            // Валидация обязательных полей
+            if (!partNumber) {
+              errors.push(`Строка ${index + 2}: отсутствует парт-номер`);
+              return;
+            }
+            if (!name) {
+              errors.push(`Строка ${index + 2}: отсутствует наименование`);
               return;
             }
 
-            newProducts.push(product);
+            // Проверка на дубликаты
+            const existingProduct = products.find(p => p.partNumber === partNumber);
+            
+            const product: Product = {
+              id: existingProduct?.id || `import-${Date.now()}-${index}`,
+              partNumber,
+              name,
+              manufacturer,
+              category,
+              subcategory,
+              description,
+              note,
+              price: isNaN(price) ? 0 : price,
+              stock: isNaN(stock) ? 0 : stock,
+              deliveryDays: isNaN(deliveryDays) ? 7 : deliveryDays,
+              specs: {},
+            };
+
+            if (existingProduct) {
+              updatedProducts.push(product);
+              warnings.push(`Строка ${index + 2}: товар "${partNumber}" уже существует и будет обновлён`);
+            } else {
+              newProducts.push(product);
+            }
           } catch (err) {
-            errors.push(`Строка ${index + 2}: ошибка парсинга`);
+            errors.push(`Строка ${index + 2}: ошибка обработки данных`);
           }
         });
 
-        importProducts(newProducts);
-        setImportResult({ success: newProducts.length, errors });
+        // Импорт всех товаров
+        importProducts([...newProducts, ...updatedProducts]);
+        
+        setImportResult({ 
+          success: newProducts.length, 
+          updated: updatedProducts.length,
+          errors,
+          warnings
+        });
       } catch (err) {
-        setImportResult({ success: 0, errors: ['Ошибка чтения файла. Проверьте формат.'] });
+        setImportResult({ success: 0, updated: 0, errors: ['Ошибка чтения файла. Проверьте формат файла (XLS, XLSX, CSV).'], warnings: [] });
       }
     };
     reader.readAsArrayBuffer(file);
@@ -101,23 +135,84 @@ export default function AdminCatalog() {
         'Производитель': 'Yageo',
         'Категория': 'resistors',
         'Подкатегория': 'smd-resistors',
-        'Описание': 'SMD резистор в корпусе 0402',
+        'Описание': 'SMD резистор в корпусе 0402, сопротивление 10кОм, допуск 1%',
         'Примечание': 'Минимальная партия 10000шт',
         'Цена': 0.003,
         'Наличие': 2500000,
         'Срок поставки': 3,
-      }
+      },
+      {
+        'Парт-номер': 'GRM155R71C104KA88D',
+        'Наименование': 'Конденсатор керамический 0402 100нФ 16В',
+        'Производитель': 'Murata',
+        'Категория': 'capacitors',
+        'Подкатегория': 'ceramic-capacitors',
+        'Описание': 'MLCC конденсатор в корпусе 0402, ёмкость 100нФ, напряжение 16В',
+        'Примечание': 'В наличии на складе',
+        'Цена': 0.005,
+        'Наличие': 1800000,
+        'Срок поставки': 2,
+      },
+      {
+        'Парт-номер': 'STM32F103C8T6',
+        'Наименование': 'Микроконтроллер STM32F103C8T6',
+        'Производитель': 'STMicroelectronics',
+        'Категория': 'ics',
+        'Подкатегория': 'microcontrollers',
+        'Описание': 'ARM Cortex-M3 микроконтроллер, 72МГц, 64КБ Flash',
+        'Примечание': 'Популярная модель',
+        'Цена': 3.45,
+        'Наличие': 15000,
+        'Срок поставки': 5,
+      },
     ];
 
     const ws = XLSX.utils.json_to_sheet(template);
+    
+    // Устанавливаем ширину колонок для удобства
+    ws['!cols'] = [
+      { wch: 25 }, // Парт-номер
+      { wch: 40 }, // Наименование
+      { wch: 20 }, // Производитель
+      { wch: 15 }, // Категория
+      { wch: 20 }, // Подкатегория
+      { wch: 50 }, // Описание
+      { wch: 30 }, // Примечание
+      { wch: 10 }, // Цена
+      { wch: 12 }, // Наличие
+      { wch: 15 }, // Срок поставки
+    ];
+
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Товары');
+    
+    // Добавляем лист с инструкцией
+    const instructions = [
+      { 'Поле': 'Парт-номер *', 'Описание': 'Уникальный идентификатор товара (артикул)', 'Пример': 'RC0402FR-0710KL' },
+      { 'Поле': 'Наименование *', 'Описание': 'Название товара', 'Пример': 'Резистор SMD 0402 10кОм' },
+      { 'Поле': 'Производитель', 'Описание': 'Бренд или производитель', 'Пример': 'Yageo' },
+      { 'Поле': 'Категория', 'Описание': 'ID категории (resistors, capacitors, ics, transistors, connectors, diodes)', 'Пример': 'resistors' },
+      { 'Поле': 'Подкатегория', 'Описание': 'ID подкатегории', 'Пример': 'smd-resistors' },
+      { 'Поле': 'Описание', 'Описание': 'Подробное описание товара', 'Пример': 'SMD резистор в корпусе 0402' },
+      { 'Поле': 'Примечание', 'Описание': 'Дополнительная информация', 'Пример': 'Минимальная партия 10000шт' },
+      { 'Поле': 'Цена', 'Описание': 'Цена за единицу в USD', 'Пример': '0.003' },
+      { 'Поле': 'Наличие', 'Описание': 'Количество на складе в штуках', 'Пример': '2500000' },
+      { 'Поле': 'Срок поставки', 'Описание': 'Срок поставки в днях', 'Пример': '3' },
+    ];
+    
+    const wsInstructions = XLSX.utils.json_to_sheet(instructions);
+    wsInstructions['!cols'] = [
+      { wch: 20 }, // Поле
+      { wch: 50 }, // Описание
+      { wch: 30 }, // Пример
+    ];
+    
+    XLSX.utils.book_append_sheet(wb, wsInstructions, 'Инструкция');
     XLSX.writeFile(wb, 'шаблон_импорта_товаров.xlsx');
   };
 
   const handleExport = () => {
     const exportData = products.map(p => ({
-      'id': p.id,
       'Парт-номер': p.partNumber,
       'Наименование': p.name,
       'Производитель': p.manufacturer,
@@ -125,15 +220,33 @@ export default function AdminCatalog() {
       'Подкатегория': p.subcategory,
       'Описание': p.description,
       'Примечание': p.note,
-      'Цена': p.price,
-      'Наличие': p.stock,
-      'Срок поставки': p.deliveryDays,
+      'Цена (USD)': p.price,
+      'Наличие (шт)': p.stock,
+      'Срок поставки (дни)': p.deliveryDays,
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);
+    
+    // Устанавливаем ширину колонок
+    ws['!cols'] = [
+      { wch: 25 }, // Парт-номер
+      { wch: 40 }, // Наименование
+      { wch: 20 }, // Производитель
+      { wch: 15 }, // Категория
+      { wch: 20 }, // Подкатегория
+      { wch: 50 }, // Описание
+      { wch: 30 }, // Примечание
+      { wch: 12 }, // Цена
+      { wch: 15 }, // Наличие
+      { wch: 18 }, // Срок поставки
+    ];
+
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Товары');
-    XLSX.writeFile(wb, 'каталог_товаров.xlsx');
+    
+    // Добавляем дату экспорта в имя файла
+    const date = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `каталог_товаров_${date}.xlsx`);
   };
 
   const startEdit = (product: Product) => {
@@ -364,25 +477,26 @@ export default function AdminCatalog() {
           <div className="bg-white rounded-xl border border-slate-200 p-6">
             <h2 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
               <FileSpreadsheet size={20} className="text-green-600" />
-              Импорт из Excel / CSV
+              Массовый импорт из Excel / CSV
             </h2>
             <p className="text-slate-600 mb-4">
-              Загрузите файл с товарами. Поддерживаются форматы XLS, XLSX, CSV. 
-              Если товар с таким ID уже существует — он будет обновлён, иначе — добавлен как новый.
+              Загрузите файл с товарами для массового добавления или обновления каталога. 
+              Поддерживаются форматы <strong>XLS, XLSX, CSV</strong>. 
+              Система автоматически определит существующие товары по парт-номеру и обновит их.
             </p>
             
-            <div className="flex flex-wrap gap-3 mb-4">
+            <div className="flex flex-wrap gap-3 mb-6">
               <button
                 onClick={handleDownloadTemplate}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 flex items-center gap-2"
+                className="px-5 py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 flex items-center gap-2 shadow-sm"
               >
-                <Download size={16} /> Скачать шаблон
+                <Download size={18} /> Скачать шаблон Excel
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 flex items-center gap-2"
+                className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm"
               >
-                <Upload size={16} /> Загрузить файл
+                <Upload size={18} /> Загрузить файл
               </button>
               <input
                 ref={fileInputRef}
@@ -393,24 +507,49 @@ export default function AdminCatalog() {
               />
             </div>
 
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <h3 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
+                <AlertCircle size={16} />
+                Как это работает:
+              </h3>
+              <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                <li>Если парт-номер <strong>новый</strong> — товар будет добавлен</li>
+                <li>Если парт-номер <strong>уже есть</strong> — товар будет обновлён</li>
+                <li>Обязательные поля: <strong>Парт-номер</strong> и <strong>Наименование</strong></li>
+                <li>Поддерживаются русские и английские названия колонок</li>
+              </ul>
+            </div>
+
             <div className="bg-slate-50 rounded-lg p-4">
-              <h3 className="font-medium text-slate-700 mb-2">Ожидаемые столбцы:</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-slate-600">
-                <div><code className="bg-white px-1 rounded">Парт-номер</code> *</div>
-                <div><code className="bg-white px-1 rounded">Наименование</code> *</div>
-                <div><code className="bg-white px-1 rounded">Производитель</code></div>
-                <div><code className="bg-white px-1 rounded">Категория</code></div>
-                <div><code className="bg-white px-1 rounded">Описание</code></div>
-                <div><code className="bg-white px-1 rounded">Цена</code></div>
-                <div><code className="bg-white px-1 rounded">Наличие</code></div>
-                <div><code className="bg-white px-1 rounded">Срок поставки</code></div>
-                <div><code className="bg-white px-1 rounded">Примечание</code></div>
+              <h3 className="font-medium text-slate-700 mb-3">Поддерживаемые колонки:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div className="bg-white p-3 rounded border border-slate-200">
+                  <div className="font-medium text-slate-800 mb-1">Обязательные:</div>
+                  <div className="space-y-1 text-slate-600">
+                    <div><code className="bg-slate-100 px-1.5 py-0.5 rounded text-xs">Парт-номер</code> <span className="text-red-500">*</span></div>
+                    <div><code className="bg-slate-100 px-1.5 py-0.5 rounded text-xs">Наименование</code> <span className="text-red-500">*</span></div>
+                  </div>
+                </div>
+                <div className="bg-white p-3 rounded border border-slate-200">
+                  <div className="font-medium text-slate-800 mb-1">Опциональные:</div>
+                  <div className="space-y-1 text-slate-600 text-xs">
+                    <div><code className="bg-slate-100 px-1.5 py-0.5 rounded">Производитель</code> <code className="bg-slate-100 px-1.5 py-0.5 rounded">Категория</code></div>
+                    <div><code className="bg-slate-100 px-1.5 py-0.5 rounded">Подкатегория</code> <code className="bg-slate-100 px-1.5 py-0.5 rounded">Описание</code></div>
+                    <div><code className="bg-slate-100 px-1.5 py-0.5 rounded">Цена</code> <code className="bg-slate-100 px-1.5 py-0.5 rounded">Наличие</code></div>
+                    <div><code className="bg-slate-100 px-1.5 py-0.5 rounded">Срок поставки</code> <code className="bg-slate-100 px-1.5 py-0.5 rounded">Примечание</code></div>
+                  </div>
+                </div>
               </div>
-              <p className="text-xs text-slate-500 mt-2">* — обязательные поля</p>
             </div>
 
             {importResult && (
-              <div className={`mt-4 p-4 rounded-lg ${importResult.errors.length === 0 ? 'bg-green-50 border border-green-200' : 'bg-amber-50 border border-amber-200'}`}>
+              <div className={`mt-4 p-4 rounded-lg ${
+                importResult.errors.length === 0 && importResult.warnings.length === 0
+                  ? 'bg-green-50 border border-green-200' 
+                  : importResult.errors.length === 0
+                  ? 'bg-blue-50 border border-blue-200'
+                  : 'bg-amber-50 border border-amber-200'
+              }`}>
                 <div className="flex items-center gap-2 mb-2">
                   {importResult.errors.length === 0 ? (
                     <CheckCircle size={18} className="text-green-600" />
@@ -418,16 +557,35 @@ export default function AdminCatalog() {
                     <AlertCircle size={18} className="text-amber-600" />
                   )}
                   <span className="font-medium">
-                    Импортировано: {importResult.success} товаров
+                    Импортировано: {importResult.success} новых товаров
+                    {importResult.updated > 0 && `, обновлено: ${importResult.updated}`}
                   </span>
                 </div>
+                
+                {importResult.warnings.length > 0 && (
+                  <div className="text-sm text-blue-800 mb-2">
+                    <div className="font-medium mb-1">Обновления:</div>
+                    <ul className="list-disc list-inside">
+                      {importResult.warnings.slice(0, 5).map((warn, i) => (
+                        <li key={i}>{warn}</li>
+                      ))}
+                      {importResult.warnings.length > 5 && (
+                        <li className="text-blue-600">... и ещё {importResult.warnings.length - 5}</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+
                 {importResult.errors.length > 0 && (
                   <div className="text-sm text-amber-800">
                     <div className="font-medium mb-1">Ошибки:</div>
                     <ul className="list-disc list-inside">
-                      {importResult.errors.map((err, i) => (
+                      {importResult.errors.slice(0, 5).map((err, i) => (
                         <li key={i}>{err}</li>
                       ))}
+                      {importResult.errors.length > 5 && (
+                        <li className="text-amber-600">... и ещё {importResult.errors.length - 5}</li>
+                      )}
                     </ul>
                   </div>
                 )}
